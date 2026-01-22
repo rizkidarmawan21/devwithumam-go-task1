@@ -1,0 +1,1 @@
+see logging: journalctl -u gotask1 -f
