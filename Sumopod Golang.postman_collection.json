@@ -1,0 +1,306 @@
+{
+  "info": {
+    "_postman_id": "ded0773a-50e6-4ce4-a8e8-d36b4edc65df",
+    "name": "Sumopod Golang",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33590627"
+  },
+  "item": [
+    {
+      "name": "Task 1",
+      "item": [
+        {
+          "name": "Get",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/categories",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Thu, 22 Jan 2026 03:50:06 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "141"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\"status\":\"success\",\"message\":\"Categories fetched successfully\",\"data\":[{\"id\":1,\"name\":\"Electronics\",\"description\":\"Electronics category\"}]}\n"
+            }
+          ]
+        },
+        {
+          "name": "Show",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/categories/{{id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "categories",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Show",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/categories/{{id}}",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "categories",
+                    "{{id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Request-Id",
+                  "value": "a4dfac57-6196-4125-bc79-29634ed8d90b"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 22 Jan 2026 05:29:06 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "131"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\"status\":200,\"message\":\"Category fetched successfully\",\"data\":{\"id\":1,\"name\":\"Electronics\",\"description\":\"Electronics category\"}}\n"
+            }
+          ]
+        },
+        {
+          "name": "Store",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"test\",\n    \"description\": \"oke\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8083/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Store",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"test\",\n    \"description\": \"oke\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8083/categories",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Thu, 22 Jan 2026 03:58:58 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "107"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\"status\":201,\"message\":\"Category created successfully\",\"data\":{\"id\":2,\"name\":\"test\",\"description\":\"oke\"}}\n"
+            }
+          ]
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"test edit\",\n    \"description\": \"oke edit\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8083/categories/{{id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "categories",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Store",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"test\",\n    \"description\": \"oke\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8083/categories",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Thu, 22 Jan 2026 03:58:58 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "107"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain; charset=utf-8"
+                }
+              ],
+              "cookie": [],
+              "body": "{\"status\":201,\"message\":\"Category created successfully\",\"data\":{\"id\":2,\"name\":\"test\",\"description\":\"oke\"}}\n"
+            }
+          ]
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/categories/{{id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "categories",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
