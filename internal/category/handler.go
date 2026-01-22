@@ -1,7 +1,7 @@
 package category
 
 import (
-	"codewithumam-go-task1/client"
+	"codewithumam-go-task1/internal/client"
 	"encoding/json"
 	"net/http"
 	"strconv"

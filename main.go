@@ -1,8 +1,8 @@
 package main
 
 import (
-	"codewithumam-go-task1/category"
-	"codewithumam-go-task1/middleware"
+	"codewithumam-go-task1/internal/category"
+	"codewithumam-go-task1/internal/middleware"
 	"fmt"
 	"log"
 	"net/http"
