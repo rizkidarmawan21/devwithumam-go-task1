@@ -1,1 +1,3 @@
 see logging: journalctl -u gotask1 -f
+
+deploy manual: https://syahidfrd.com/blog/bare-metal-go-deployment/
