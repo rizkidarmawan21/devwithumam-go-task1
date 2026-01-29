@@ -1,28 +1,36 @@
-package category
+package handlers
 
 import (
 	"codewithumam-go-task1/internal/client"
+	"codewithumam-go-task1/models"
+	"codewithumam-go-task1/services"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 )
 
-type httpHandler struct{}
-
-func NewHTTPHandler() *httpHandler {
-	return &httpHandler{}
+type CategoryHandler struct {
+	service *services.CategoryService
 }
 
-func (h *httpHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
+func NewCategoryHandler(service *services.CategoryService) *CategoryHandler {
+	return &CategoryHandler{service: service}
+}
+
+func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
+	categories, err := h.service.GetAll()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-
-	categories := CategoriesData
-
 	response := client.NewResponse(http.StatusOK, "Categories fetched successfully", categories)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *httpHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
+func (h *CategoryHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
 	// get path parameter {id}
 	id := r.PathValue("id")
 
@@ -36,8 +44,8 @@ func (h *httpHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get category by ID
-	category := CategoriesData.GetByID(intID)
-	if category == nil {
+	category, err := h.service.GetByID(intID)
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := client.NewResponse(http.StatusNotFound, "Category not found", nil)
 		json.NewEncoder(w).Encode(response)
@@ -49,10 +57,9 @@ func (h *httpHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *httpHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
-
+func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	// validate request body
-	var category Category
+	var category models.Category
 	err := json.NewDecoder(r.Body).Decode(&category)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -78,21 +85,21 @@ func (h *httpHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create category
-	newCategory := Category{
-		ID:          len(CategoriesData) + 1,
-		Name:        category.Name,
-		Description: category.Description,
+	err = h.service.Create(&category)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("Error when create category: %s", err.Error())
+		response := client.NewResponse(http.StatusInternalServerError, "Something wrong when create category", nil)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
 
-	// this method add to memory
-	CategoriesData = append(CategoriesData, &newCategory)
-
 	w.WriteHeader(http.StatusCreated)
-	response := client.NewResponse(http.StatusCreated, "Category created successfully", newCategory)
+	response := client.NewResponse(http.StatusCreated, "Category created successfully", category)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *httpHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
+func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	// get path parameter {id}
 	id := r.PathValue("id")
 
@@ -105,17 +112,8 @@ func (h *httpHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get category by ID
-	category := CategoriesData.GetByID(intID)
-	if category == nil {
-		w.WriteHeader(http.StatusNotFound)
-		response := client.NewResponse(http.StatusNotFound, "Category not found", nil)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-
 	// validate request body
-	var updateCategory Category
+	var updateCategory models.Category
 	err = json.NewDecoder(r.Body).Decode(&updateCategory)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -125,7 +123,7 @@ func (h *httpHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate request body
-	if category.Name == "" {
+	if updateCategory.Name == "" {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		response := client.NewResponse(http.StatusUnprocessableEntity, "Name is required", nil)
 		json.NewEncoder(w).Encode(response)
@@ -133,7 +131,7 @@ func (h *httpHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate request body
-	if category.Description == "" {
+	if updateCategory.Description == "" {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		response := client.NewResponse(http.StatusUnprocessableEntity, "Description is required", nil)
 		json.NewEncoder(w).Encode(response)
@@ -141,18 +139,22 @@ func (h *httpHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// update category
-	category.Name = updateCategory.Name
-	category.Description = updateCategory.Description
-
-	// this method update to memory
-	CategoriesData[intID-1] = category
+	updateCategory.ID = intID
+	err = h.service.Update(&updateCategory)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("Error when update category: %s", err.Error())
+		response := client.NewResponse(http.StatusInternalServerError, "Something wrong when update category", nil)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
-	response := client.NewResponse(http.StatusOK, "Category updated successfully", category)
+	response := client.NewResponse(http.StatusOK, "Category updated successfully", updateCategory)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *httpHandler) DeleteCategory(w http.ResponseWriter, r *http.Request) {
+func (h *CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request) {
 	// get path parameter {id}
 	id := r.PathValue("id")
 
@@ -165,19 +167,15 @@ func (h *httpHandler) DeleteCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get category by ID
-	category := CategoriesData.GetByID(intID)
-	if category == nil {
-		w.WriteHeader(http.StatusNotFound)
-		response := client.NewResponse(http.StatusNotFound, "Category not found", nil)
+	// delete category
+	err = h.service.Delete(intID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("Error when delete category: %s", err.Error())
+		response := client.NewResponse(http.StatusInternalServerError, "Something wrong when delete category", nil)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-
-	// delete category
-	// get all element before and after the category
-	// and then append to the new CategoriesData
-	CategoriesData = append(CategoriesData[:intID-1], CategoriesData[intID:]...)
 
 	w.WriteHeader(http.StatusOK)
 	response := client.NewResponse(http.StatusOK, "Category deleted successfully", nil)
