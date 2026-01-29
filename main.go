@@ -30,8 +30,6 @@ func main() {
 	if _, err := os.Stat(".env"); err == nil {
 		viper.SetConfigFile(".env")
 		_ = viper.ReadInConfig()
-	} else {
-		log.Println("No .env file found, using environment variables only")
 	}
 
 	config := Config{
