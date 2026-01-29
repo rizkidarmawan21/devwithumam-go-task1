@@ -60,6 +60,22 @@ func main() {
 		w.Write([]byte("OK"))
 	}))
 
+	// healthcheck
+	router.Handle("GET /health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Ping database to check connection
+		err := db.Ping()
+		if err != nil {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(`{"status":"unhealthy","message":"Database connection failed","error":"` + err.Error() + `"}`))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status":"healthy","message":"OK"}`))
+	}))
+
 	// Products
 	router.Handle("GET /api/products", http.HandlerFunc(productHandler.GetAll))
 	router.Handle("POST /api/products", http.HandlerFunc(productHandler.Create))
