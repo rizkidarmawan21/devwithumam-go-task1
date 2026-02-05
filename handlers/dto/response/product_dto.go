@@ -1,4 +1,4 @@
-package dto
+package response
 
 import "codewithumam-go-task1/models"
 

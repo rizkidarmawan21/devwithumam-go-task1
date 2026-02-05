@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"codewithumam-go-task1/dto"
+	"codewithumam-go-task1/handlers/dto/response"
 	"codewithumam-go-task1/internal/client"
 	"codewithumam-go-task1/models"
 	"codewithumam-go-task1/services"
@@ -26,7 +26,7 @@ func (h *ProductHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	productResponses := dto.NewProductResponses(products)
+	productResponses := response.NewProductResponses(products)
 
 	w.WriteHeader(http.StatusOK)
 	response := client.NewResponse(http.StatusOK, "Products fetched successfully", productResponses)
@@ -52,7 +52,7 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	productResponse := dto.NewProductDetailResponse(product)
+	productResponse := response.NewProductDetailResponse(product)
 
 	w.WriteHeader(http.StatusOK)
 	response := client.NewResponse(http.StatusOK, "Product show successfully", productResponse)
