@@ -14,13 +14,25 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (r *ProductRepository) GetAll() (models.Products, error) {
+func (r *ProductRepository) GetAll(nameFilter string) (models.Products, error) {
 	query := "SELECT id, name, price, stock, category_id, created_at FROM products"
-	rows, err := r.db.Query(query)
+	// rows, err := r.db.Query(query)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// defer rows.Close() // close koneksi ke db
+
+	args := []interface{}{}
+	if nameFilter != "" {
+		query += " WHERE products.name ILIKE $1"
+		args = append(args, "%"+nameFilter+"%")
+	}
+
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close() // close koneksi ke db
+	defer rows.Close()
 
 	products := make(models.Products, 0)
 	for rows.Next() {
