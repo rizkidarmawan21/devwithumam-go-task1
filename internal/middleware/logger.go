@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -62,6 +63,10 @@ func RequestLogger(next http.Handler) http.Handler {
 
 		// Add request ID to response header (optional, untuk tracing)
 		w.Header().Set("X-Request-ID", requestID)
+		// API routes always return JSON
+		if strings.HasPrefix(r.URL.Path, "/api/") {
+			w.Header().Set("Content-Type", "application/json")
+		}
 
 		// Call next handler
 		next.ServeHTTP(w, r)

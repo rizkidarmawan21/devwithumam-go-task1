@@ -54,6 +54,11 @@ func main() {
 	categorySvc := services.NewCategoryService(categoryRepo)
 	categoryHandler := handlers.NewCategoryHandler(categorySvc)
 
+	// transaction
+	transactionRepo := repositories.NewTransactionRepository(db)
+	transactionSvc := services.NewTransactionService(transactionRepo)
+	transactionHandler := handlers.NewTransactionHandler(transactionSvc)
+
 	// root
 	router.Handle("GET /", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -89,6 +94,9 @@ func main() {
 	router.Handle("POST /api/categories", http.HandlerFunc(categoryHandler.CreateCategory))
 	router.Handle("PUT /api/categories/{id}", http.HandlerFunc(categoryHandler.UpdateCategory))
 	router.Handle("DELETE /api/categories/{id}", http.HandlerFunc(categoryHandler.DeleteCategory))
+	
+	// Transactions
+	router.Handle("POST /api/checkout", http.HandlerFunc(transactionHandler.Checkout))
 
 	// Apply request logger middleware
 	handler := middleware.RequestLogger(router)
