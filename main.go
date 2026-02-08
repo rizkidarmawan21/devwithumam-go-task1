@@ -59,6 +59,11 @@ func main() {
 	transactionSvc := services.NewTransactionService(transactionRepo)
 	transactionHandler := handlers.NewTransactionHandler(transactionSvc)
 
+	// report
+	reportRepo := repositories.NewReportRepository(db)
+	reportSvc := services.NewReportService(reportRepo)
+	reportHandler := handlers.NewReportHandler(reportSvc)
+
 	// root
 	router.Handle("GET /", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -97,6 +102,10 @@ func main() {
 	
 	// Transactions
 	router.Handle("POST /api/checkout", http.HandlerFunc(transactionHandler.Checkout))
+
+	// Report
+	router.Handle("GET /api/report/hari-ini", http.HandlerFunc(reportHandler.GetReportHariIni))
+	router.Handle("GET /api/report", http.HandlerFunc(reportHandler.GetReport))
 
 	// Apply request logger middleware
 	handler := middleware.RequestLogger(router)
